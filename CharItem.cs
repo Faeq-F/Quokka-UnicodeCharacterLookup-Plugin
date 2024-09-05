@@ -5,9 +5,9 @@ using System.Windows.Media.Imaging;
 namespace Plugin_UnicodeCharacterLookup {
   class CharItem : ListItem {
 
-    public CharItem(Char character) {
-      this.Name = character.character;
-      this.Description = character.description;
+    public CharItem(string character, string name) {
+      this.Name = character;
+      this.Description = name;
       this.Icon = new BitmapImage(new Uri(
           Environment.CurrentDirectory + "\\PlugBoard\\Plugin_UnicodeCharacterLookup\\Plugin\\globe.png"));
     }
