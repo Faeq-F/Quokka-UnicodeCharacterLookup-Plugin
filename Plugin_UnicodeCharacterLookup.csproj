@@ -33,10 +33,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>settings.json</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="UnicodeChars.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>UnicodeChars.json</TargetPath>
-    </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>

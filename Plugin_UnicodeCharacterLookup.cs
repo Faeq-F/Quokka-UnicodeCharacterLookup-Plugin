@@ -33,7 +33,7 @@ namespace Plugin_UnicodeCharacterLookup {
       List<ListItem> characters = new List<ListItem>();
       ApiResponse response = JsonConvert.DeserializeObject<ApiResponse>(obj)!;
       foreach (Result ch in response.results) {
-        characters.Add(new CharItem(ch.character, ch.name));
+        characters.Add(new CharItem(ch.character, ch.codepoint + " | " + ch.name));
       }
       return characters;
     }
