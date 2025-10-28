@@ -73,7 +73,7 @@ namespace Plugin_UnicodeCharacterLookup {
         using (var sr = new StreamReader(response.GetResponseStream())) {
           characters = sr.ReadToEnd();
         }
-        return parseCharacters(characters);
+        return FuzzySearch.sort(command, parseCharacters(characters)).ToList();
       } catch (Exception) {
         return new List<ListItem>();
       }
