@@ -10,11 +10,7 @@ public class PluginSettings {
   /// <summary>
   ///   The threshold for when to consider a character's description
   ///   is similar enough to the query for it to be displayed 
-  ///   (defaults to 80). Uses the loose-matching rule from the Unicode API
+  ///   (defaults to 90). The larger the number, the more similar it needs to be
   /// </summary>
-  public int FuzzySearchThreshold { get; set; } = 80;
-  /// <summary>
-  /// The number of items to retrieve
-  /// </summary>
-  public int ItemLimit { get; set; } = 10;
+  public int FuzzySearchThreshold { get; set; } = 90;
 }

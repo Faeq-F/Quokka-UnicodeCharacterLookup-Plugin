@@ -3,18 +3,33 @@ using Newtonsoft.Json;
 using Quokka.ListItems;
 using Quokka.PluginArch;
 using System.IO;
-using System.Net;
 
 namespace Plugin_UnicodeCharacterLookup {
+
+  /// <summary>
+  /// A Unicode character
+  /// </summary>
+  public class UnicodeCharacter {
+    /// <summary>
+    /// The character itself
+    /// </summary>
+    public string name { get; set; } = "";
+    /// <summary>
+    /// A description of the character
+    /// </summary>
+    public string description { get; set; } = "";
+  }
 
   /// <summary>
   /// The Unicode Character Lookup plugin
   /// </summary>
   public class UnicodeCharacterLookup : Plugin {
 
-    internal List<CharItem> AllChars = new();
     private static PluginSettings pluginSettings = new();
     internal static PluginSettings PluginSettings { get => pluginSettings; set => pluginSettings = value; }
+
+    private static List<UnicodeCharacter> characters = new();
+    internal static List<UnicodeCharacter> Characters { get => characters; set => characters = value; }
 
     /// <summary>
     /// Loads plugin settings
@@ -22,21 +37,14 @@ namespace Plugin_UnicodeCharacterLookup {
     public UnicodeCharacterLookup() {
       string fileName = Environment.CurrentDirectory + "\\PlugBoard\\Plugin_UnicodeCharacterLookup\\Plugin\\settings.json";
       PluginSettings = JsonConvert.DeserializeObject<PluginSettings>(File.ReadAllText(fileName))!;
+      fileName = Environment.CurrentDirectory + "\\PlugBoard\\Plugin_UnicodeCharacterLookup\\Plugin\\index.json";
+      Characters = JsonConvert.DeserializeObject<List<UnicodeCharacter>>(File.ReadAllText(fileName))!;
     }
 
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
     public override string PluggerName { get; set; } = "UnicodeCharacterLookup";
-
-    private List<ListItem> parseCharacters(string obj) {
-      List<ListItem> characters = new List<ListItem>();
-      ApiResponse response = JsonConvert.DeserializeObject<ApiResponse>(obj)!;
-      foreach (Result ch in response.results) {
-        characters.Add(new CharItem(ch.character, ch.codepoint + " | " + ch.name));
-      }
-      return characters;
-    }
 
     /// <summary>
     /// <inheritdoc/>
@@ -65,18 +73,7 @@ namespace Plugin_UnicodeCharacterLookup {
     /// <returns>List of characters that possibly match what is being searched for</returns>
     public override List<ListItem> OnSignifier(string command) {
       command = command.Substring(PluginSettings.CharacterSignifier.Length);
-      try {
-        WebRequest request = WebRequest.CreateHttp("https://unicode-api.aaronluna.dev/v1/characters/search?name=" + command + "&min_score=" + PluginSettings.FuzzySearchThreshold + "&per_page=" + PluginSettings.ItemLimit);
-        request.ContentType = "application/json";
-        string characters;
-        var response = (HttpWebResponse) request.GetResponse();
-        using (var sr = new StreamReader(response.GetResponseStream())) {
-          characters = sr.ReadToEnd();
-        }
-        return FuzzySearch.sort(command, parseCharacters(characters)).ToList();
-      } catch (Exception) {
-        return new List<ListItem>();
-      }
+      return FuzzySearch.sort(command, FuzzySearch.searchAll(command, Characters.Select(x => x.description).ToList(), PluginSettings.FuzzySearchThreshold).Select(x => (ListItem) new CharItem(Characters[x.Index].name, Characters[x.Index].description)).ToList()).ToList();
     }
   }
 

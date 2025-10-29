@@ -1,5 +1,4 @@
 {
   "CharacterSignifier": "char ",
-  "FuzzySearchThreshold": 80,
-  "ItemLimit": 10
+  "FuzzySearchThreshold": 90
 }

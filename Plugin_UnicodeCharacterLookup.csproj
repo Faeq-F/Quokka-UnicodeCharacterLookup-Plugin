@@ -33,6 +33,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>settings.json</TargetPath>
     </ContentWithTargetPath>
+    <ContentWithTargetPath Include="index.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>index.json</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>
