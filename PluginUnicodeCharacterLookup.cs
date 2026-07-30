@@ -1,4 +1,3 @@
-
 using Newtonsoft.Json;
 using Quokka.ListItems;
 using Quokka.PluginArch;
@@ -29,22 +28,30 @@ namespace PluginUnicodeCharacterLookup
   public class UnicodeCharacterLookup : Plugin
   {
 
-    private static PluginSettings pluginSettings = new();
-    internal static PluginSettings PluginSettings { get => pluginSettings; set => pluginSettings = value; }
+    private static readonly Lazy<PluginSettings> _lazyPluginSettings = new(() =>
+    {
+      string fileName = Path.Combine(Environment.CurrentDirectory, "PlugBoard", "PluginUnicodeCharacterLookup", "Plugin", "settings.json");
+      return File.Exists(fileName)
+        ? JsonConvert.DeserializeObject<PluginSettings>(File.ReadAllText(fileName)) ?? new PluginSettings()
+        : new PluginSettings();
+    });
 
-    private static List<UnicodeCharacter> characters = new();
-    internal static List<UnicodeCharacter> Characters { get => characters; set => characters = value; }
+    internal static PluginSettings PluginSettings => _lazyPluginSettings.Value;
+
+    private static readonly Lazy<List<UnicodeCharacter>> _lazyCharacters = new(() =>
+    {
+      string fileName = Path.Combine(Environment.CurrentDirectory, "PlugBoard", "PluginUnicodeCharacterLookup", "Plugin", "index.json");
+      return File.Exists(fileName)
+        ? JsonConvert.DeserializeObject<List<UnicodeCharacter>>(File.ReadAllText(fileName)) ?? new List<UnicodeCharacter>()
+        : new List<UnicodeCharacter>();
+    });
+
+    internal static List<UnicodeCharacter> Characters => _lazyCharacters.Value;
 
     /// <summary>
-    /// Loads plugin settings
+    /// Initializes a new instance of the <see cref="UnicodeCharacterLookup"/> class.
     /// </summary>
-    public UnicodeCharacterLookup()
-    {
-      string fileName = Environment.CurrentDirectory + "\\PlugBoard\\PluginUnicodeCharacterLookup\\Plugin\\settings.json";
-      PluginSettings = JsonConvert.DeserializeObject<PluginSettings>(File.ReadAllText(fileName))!;
-      fileName = Environment.CurrentDirectory + "\\PlugBoard\\PluginUnicodeCharacterLookup\\Plugin\\index.json";
-      Characters = JsonConvert.DeserializeObject<List<UnicodeCharacter>>(File.ReadAllText(fileName))!;
-    }
+    public UnicodeCharacterLookup() { }
 
     /// <summary>
     /// <inheritdoc/>
@@ -84,7 +91,7 @@ namespace PluginUnicodeCharacterLookup
       return FuzzySearch.Sort(command,
         new Collection<ListItem>(
           FuzzySearch.SearchAll(command,
-            new Collection<string>(Characters.Select(x => x.Description).ToList()), PluginSettings.FuzzySearchThreshold)
+            new Collection<string>(Characters.ConvertAll(x => x.Description)), PluginSettings.FuzzySearchThreshold)
             .Select(x => (ListItem)new CharItem(Characters[x.Index].Name, Characters[x.Index].Description))
             .ToList())
         );

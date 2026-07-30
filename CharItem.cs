@@ -1,10 +1,10 @@
-﻿using Quokka;
 using Quokka.ListItems;
 using Quokka.PluginArch;
+using System.Windows;
 
 namespace PluginUnicodeCharacterLookup
 {
-  class CharItem : ListItem
+  internal sealed class CharItem : ListItem
   {
 
     public CharItem(string character, string name)
@@ -19,8 +19,8 @@ namespace PluginUnicodeCharacterLookup
     //When item is selected, copy text
     public override void Execute()
     {
-      System.Windows.Clipboard.SetText(Name);
-      App.Current.MainWindow.Close();
+      Clipboard.SetText(Name);
+      Application.Current.MainWindow.Close();
     }
   }
 

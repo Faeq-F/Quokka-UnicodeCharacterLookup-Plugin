@@ -12,7 +12,7 @@
     public string CharacterSignifier { get; set; } = "char ";
     /// <summary>
     ///   The threshold for when to consider a character's description
-    ///   is similar enough to the query for it to be displayed 
+    ///   is similar enough to the query for it to be displayed
     ///   (defaults to 90). The larger the number, the more similar it needs to be
     /// </summary>
     public int FuzzySearchThreshold { get; set; } = 90;
